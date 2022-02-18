@@ -1,0 +1,41 @@
+{
+  "name": "server-marketplace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "formatcode": "prettier --single-quote --trailing-comma all --tab-width 4 --write './**/*.{js,json,scss}'",
+    "start": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "marketplace",
+    "blockchain",
+    "supplychain"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "author": "jason",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "http-status": "^1.5.0",
+    "husky": "^7.0.4",
+    "joi": "^17.6.0",
+    "lint-staged": "^12.3.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.1.8",
+    "mongoose-slug-generator": "^1.0.4",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7",
+    "prettier": "^2.5.1"
+  }
+}
