@@ -44,7 +44,7 @@ class App extends Component {
 			for(var i = 1; i <= productCount; i++) {
 				let product = await marketplace.methods.products(i).call();
 				const {data} = await axios.get(`http://localhost:8080/product/name?name=${product.name}`)
-				product = {...product, linkImage:data.linkImage}
+				product = {...product, linkImage:data.linkImage, purchase: data.purchase}
 				this.setState({
 					products: [...this.state.products, product]
 				})
@@ -70,21 +70,47 @@ class App extends Component {
 
 	createProduct(name, price, linkImage) {
 		this.setState({loading: true});
-		console.log(name, price, linkImage);
 		this.state.marketplace.methods.createProduct(name, price).send({from: this.state.account})
 			.once('receipt', (receipt) => {
+				this.setState({loading: false})
 			})
 		axios.post('http://localhost:8080/product', {name, price, linkImage, addressOwner: this.state.account})
 			.then(response => console.log(response));
 		this.setState({loading: false})
 	}
 
-	purchaseProduct(id, price) {
-		this.setState({loading: true});
+	purchaseProduct = async (id, price) => {
+		this.setState({ loading: true });
 		this.state.marketplace.methods.purchaseProduct(id).send({from: this.state.account, value: price})
-			.once('receipt', (receipt) => {
+			.once('receipt', async (receipt) => {
 				this.setState({loading: false})
 			})
+			const web3 = window.web3;
+			// Load account
+			const accounts = await web3.eth.getAccounts();
+			this.setState({account: accounts[0]})
+			const networkId = await web3.eth.net.getId();
+			const networkData = Marketplace.networks[networkId];
+			if(networkData) {
+				const marketplace = web3.eth.Contract(Marketplace.abi, networkData.address);
+				this.setState({marketplace});
+				const productCount = await marketplace.methods.productCount().call();
+				this.setState({productCount});
+				// Load product
+				let product
+				for(var i = 1; i <= productCount; i++) {
+					let productID = await marketplace.methods.products(i).call();
+					if (+productID.id === +id) {
+						product = productID
+						break;
+					}
+				}
+				axios.put(`http://localhost:8080/product/update`, {purchase: true, name: product.name})
+						.then((res) => console.log(res))
+				this.setState({loading: false});
+			}else {
+				window.alert('Marketplace contract not deployed to detected network.');
+			}
 	}
 
 	render() {
@@ -97,9 +123,7 @@ class App extends Component {
 							this.state.loading 
 								? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>  
 								: <Routes> 
-									<Route path="/" render={() => {
-										return this.state ? <Home /> : <Navigate replace to="/login" />
-									}} />
+									<Route path="/" element={ <Home products={ this.state.products} purchaseProduct={this.purchaseProduct}/> }/>
 									<Route path="/profile" element={ <Profile /> } />
 									<Route path="/manage" element={<Main 
 										products={this.state.products} 

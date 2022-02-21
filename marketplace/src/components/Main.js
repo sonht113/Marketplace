@@ -1,4 +1,5 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+import './App.css';
 
 class Main extends Component {
 	render() {
@@ -51,7 +52,7 @@ class Main extends Component {
 							<th scope="col">LinkImage</th>
 							<th scope="col">Price</th>
 							<th scope="col">Owner</th>
-							<th scope="col"></th>
+							<th scope="col">State</th>
 						</tr>
 					</thead>
 					<tbody id="productList">
@@ -66,15 +67,7 @@ class Main extends Component {
 									<td>
 										{
 											!product.purchased 
-												? 
-													<button 
-														className="btn btn-success buyButton"
-														name={product.id}
-														value={product.price}
-														onClick={(event) => {
-															event.preventDefault();
-															this.props.purchaseProduct(event.target.name, event.target.value)
-														}}>Buy</button>
+												? <p className="text-success">Not purchase</p>
 												: <p className="text-danger"> Purchased </p>
 										}
 								</td>

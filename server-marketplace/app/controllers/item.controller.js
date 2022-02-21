@@ -6,7 +6,7 @@ const ApiError = require('../../util/ApiError');
 
 const createItem = catchAsync(async (req, res) => {
 	const item = await itemService.createItem(req.body);
-	console.log(req.body);
+	console.log(item);
 	res.status(httpStatus.CREATED).send(item);
 })
 
@@ -30,7 +30,7 @@ const getItemByName = catchAsync(async (req, res) => {
 });
 
 const updateItem = catchAsync(async (req, res) => {
-	const item = await itemService.updateItemById(req.params.itemId, req.body);
+	const item = await itemService.updateItemByName(req.body.name, req.body);
 	res.send(item);
 });
 

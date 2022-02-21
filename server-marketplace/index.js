@@ -5,6 +5,7 @@ const routes = require('./routes/index.js');
 const ApiError = require('./util/ApiError');
 const httpStatus = require('http-status');
 const cors = require('cors');
+const fileuploader = require('express-fileupload');
 const app = express();
 const port = 8080;
 
@@ -23,7 +24,8 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 // HTTP logger
 app.use(morgan('combined'));
 
-app.use(cors())
+app.use(cors({ exposedHeaders: "id" }))
+app.use(fileuploader());
 
 app.use(routes);
 

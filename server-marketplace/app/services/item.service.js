@@ -52,8 +52,9 @@ const getItemById = async (id) => {
  * @param {Object} updateBody
  * @returns {Promise<Item>}
  */
-const updateItemById = async (itemId, updateBody) => {
-	const item = await getBookById(itemId);
+const updateItemByName = async (name, updateBody) => {
+	const item = await getItemByName(name);
+	console.log(item);
 	if (!item) {
 		throw new ApiError(httpStatus.NOT_FOUND, 'Item not found');
 	}
@@ -81,6 +82,6 @@ module.exports = {
 	queryItems,
 	getItemById,
 	getItemByName,
-	updateItemById,
+	updateItemByName,
 	deleteItemById,
 };
